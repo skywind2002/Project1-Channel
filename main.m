@@ -1,18 +1,20 @@
 %main program,run this to get full result
-clear all;
-clc;
+clear all; close all; clc;
 
 %% hyperparameters
 len = 12000;
-modulation = 3; %modulation mod:1,2,3
-r = 1; %modulation radius
-%b = 0.7; rho = 0.98; sigma = 0.1; %channel parameters;
-b = 0; rho = 1; sigma = 0.1;
-conv = 3; %conv code mod:2,3
-crc_g = '100000111' - '0';
-crc_len = 200; %CRC poly length
-crc_ENB = 1; %if or not to enable CRC check: 1 enable;0 disable
+% module config
+modulation = 3; r = 1;
+% crc config
+crc_ENB = 1; crc_g = '100000111' - '0'; crc_len = 200;
+% conv config
+conv = 3;
+% channel config
+b = 0.6; rho = 0.98; sigma = 0.1; %channel parameters;
+%b = 1; rho = 1; sigma = 0.1;
+% beta correct config
 beta_corr_mode = 0; % 1,2: known beta, 3: unknown beta
+% viterbi config
 Viterbi_mode = 0; % 0: Hard Vierbi, 1: Soft Viterbi
 
 %% coding parameters
@@ -66,11 +68,11 @@ if (Viterbi_mode == 0) % hard Viterbi decode
     receive_message = reshape(dec2bin(anti_Gray_code(mod(phase, 2^N) + 1), N)' - '0', 1, []);
     decode_message = viterbi_decode(n, k, m, A, receive_message)';
 else % 软 Viterbi 译码
-    
+    % TODO
 end
 
 err = CRC_detect_error(decode_message, crc_len + length(crc_g) - 1, crc_g);
 
 %% data statistis
-figure; scatterplot(corr_symbol(1:end - 1));
+scatterplot(corr_symbol(1:end - 1));
 figure; stem(err);
