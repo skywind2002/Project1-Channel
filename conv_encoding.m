@@ -2,7 +2,7 @@
 % 注：如果有 m 个 k*n 的矩阵 A1, A2, ..., Am，如 m = 5，则可以调用
 % A = cat(3, A1, A2, A3, A4, A5);
 % 得到这里的参数 A。
-function y = conv_coding(n, k, m, A, x, p)
+function y = conv_encoding(n, k, m, A, x, p)
 
     if (nargin == 5)
         p = 2;

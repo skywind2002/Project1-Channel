@@ -1,11 +1,11 @@
 %% notes
-%message: input 01 array
-%modulation: modulation mode(1,2,3)
-%r: modulation radius
+% message: input 01 array
+% modulation: modulation mode(1,2,3)
+% r: modulation radius
 % (n, k, m), A: conv parameters
-%len : CRC poly length
+% len : CRC poly length
 %% message conv code utlization
-%message self implemetation (add head/tail,add CRC?)
+% message self implemetation (add head/tail,add CRC?)
 function [y, n, k, m, A] = transmitter(x, modulation, r, n, k, m, A)
 
     %% CONV
