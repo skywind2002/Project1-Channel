@@ -48,7 +48,7 @@ function [q, r] = GFp_deconv(u, v, p)
 
     for t = 1:ulen - vlen + 1
         q(:, t) = mod(vinv * u(:, t), p);
-        u(:, t:t + vlen - 1) = mod(u(:, t:t + vlen - 1) - mod(v .* q(:, t), p), p);
+        u(:, t:t + vlen - 1) = mod(u(:, t:t + vlen - 1) - v .* q(:, t), p);
     end
 
     r = u(:, ulen - vlen + 2:ulen);

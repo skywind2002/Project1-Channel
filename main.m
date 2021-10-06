@@ -25,7 +25,7 @@ end
 
 %% bitstream generation
 message = rand(1, len);
-message = int8(message > 0.5); %generater 01 bit stream
+message = double(message > 0.5); %generater 01 bit stream
 
 %% system simulation
 if (crc_ENB)
@@ -41,7 +41,7 @@ if (any(beta_corr_mode == [1, 2])) % correct y with known beta
 end
 
 if (Viterbi_mode == 0) % 硬 Viterbi 译码
-    z = f_viterbiDecode(n, k, m, A, r)
+    z = f_viterbiDecode(n, k, m, A, y)';
 else % 软 Viterbi 译码
 
 end

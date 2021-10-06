@@ -1,5 +1,5 @@
 %% 收方利用已知的 beta 对收到的复向量 y 进行校正，得到复向量 x 作为收到
-% 的信号。beta = [] 时视为不知道 beta。
+% 的信号。
 function x = beta_correct(y, b, beta)
     % y - 行向量，表示收到的复向量
     % b - 标量，为题目中的参数
