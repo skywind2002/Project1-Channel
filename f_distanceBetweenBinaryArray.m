@@ -1,6 +1,6 @@
 % 计算两个BinaryArray之间的距离
 function d = f_distanceBetweenBinaryArray(a, b)
-    d = sum(a ~= b);
+    d = sum(a ~= b, 2);
     return
 end
 
