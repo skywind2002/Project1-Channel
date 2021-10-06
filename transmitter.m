@@ -1,24 +1,15 @@
 %% notes
-%message: input 01 array
-%modulation: modulation mode(1,2,3)
-%r: modulation radius
+% message: input 01 array
+% modulation: modulation mode(1,2,3)
+% r: modulation radius
 % (n, k, m), A: conv parameters
-%len : CRC poly length
+% len : CRC poly length
 %% message conv code utlization
-%message self implemetation (add head/tail,add CRC?)
+% message self implemetation (add head/tail,add CRC?)
 function [y, n, k, m, A] = transmitter(x, modulation, r, n, k, m, A)
 
     %% CONV
-    x = [zeros(1, m - 1), x]; % 前面补零，从零状态开始
-    x = [x, zeros(1, mod(-length(x), k))]; % 后面补零，使得 x 长度为 k 的整数倍
-    A = reshape(permute(A, [3, 1, 2]), m * k, n); % 化为 m*k 行 n 列矩阵方便后续计算
-    y = zeros(length(x) / k - m + 1, n);
-
-    for t = m:length(x) / k
-        y(t - m + 1, :) = mod(double(x((t - m) * k + 1:t * k)) * A, 2);
-    end
-
-    y = reshape(y', 1, []);
+    y = conv_encoding(n, k, m, A, x);
 
     %% MODULATION
     % message constellation mapping (PSK modulation)
