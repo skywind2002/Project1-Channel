@@ -11,7 +11,8 @@ assert(all(size(A)==[m, k, n]), "A 应为 m*k*n 矩阵！")
 A = reshape(A, m*k, n); % 化为 m*k 行 n 列矩阵方便后续计算
 x = [zeros(1, m-1), x]; % 前面补零，从零状态开始
 x = [x, zeros(1, mod(-length(x), k))]; % 后面补零，使得 x 长度为 k 的整数倍
-y = [];
-for t = m:size(x, 1)/k
-    y = [y, mod(x((t-m)*k+1:t*k) * A, p)];
+y = zeros(length(x)/k-m+1, n);
+for t = m:length(x)/k
+    y(t-m+1,:) = mod(double(x((t-m)*k+1:t*k)) * A, p);
 end
+y = reshape(y', 1, []);
