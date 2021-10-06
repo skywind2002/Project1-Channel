@@ -6,9 +6,9 @@ clc;
 len = 12000;
 modulation = 3; %modulation mod:1,2,3
 r = 1; %modulation radius
-b = 0.7; rho = 0.98; sigma = 0.1; %channel parameters;
+%b = 0.7; rho = 0.98; sigma = 0.1; %channel parameters;
 b = 0; rho = 1; sigma = 0.1;
-%conv = 3; %conv code mod:2,3
+conv = 3; %conv code mod:2,3
 crc_g = '100000111' - '0';
 crc_len = 200; %CRC poly length
 crc_ENB = 1; %if or not to enable CRC check: 1 enable;0 disable
@@ -43,6 +43,7 @@ if (Viterbi_mode == 0) % 硬 Viterbi 译码
     Gray_code = [0 1 3 2 6 7 5 4];
     y2 = reshape(dec2bin(Gray_code(mod(round(mod(angle(y) / pi, 2) * 4), 8) + 1), 3)' - '0', 1, []);
     z = viterbi_decode(n, k, m, A, y2)';
+    z = z(1:end-1);
 else % 软 Viterbi 译码
 
 end
@@ -50,4 +51,5 @@ end
 e = CRC_detect_error(z, crc_len+length(crc_g)-1, crc_g);
 
 %% data statistis
-scatterplot(y(1:end - 1));
+figure; scatterplot(y(1:end - 1));
+figure; stem(e);

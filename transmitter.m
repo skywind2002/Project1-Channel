@@ -9,7 +9,7 @@
 function [y, n, k, m, A] = transmitter(x, modulation, r, n, k, m, A)
 
     %% CONV
-    x = conv_coding(n, k, m, A, x, 2);
+    x = conv_encoding(n, k, m, A, x, 2);
 
     %% MODULATION
     % message constellation mapping (PSK modulation)
