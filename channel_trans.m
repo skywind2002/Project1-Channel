@@ -1,6 +1,6 @@
 function [y, beta] = channel_trans(x, b, rho, sigma)
     %channel transmit function
-    x = [x, 0];
+    % x = [x 0];
     len = length(x);
     beta = zeros(1, len);
     y = zeros(1, len);

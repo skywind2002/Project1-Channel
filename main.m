@@ -50,7 +50,7 @@ raw_message = double(rand(1, len) > 0.5); %generater 01 bit stream
 % CRC
 CRC_message = CRC(raw_message, crc_len, crc_g, crc_ENB);
 % CONV
-conv_message = conv_encoding(n, k, m, A, CRC_message);
+conv_message = conv_encoding(n, k, m, A, CRC_message); % 增加了 (m-1) 个收尾零
 % MODULATION
 modul_symbol = transmitter(conv_message, N, mapping);
 
@@ -70,9 +70,12 @@ if (Viterbi_mode == 0) % hard Viterbi decode
 else % 软 Viterbi 译码
     % TODO
 end
+decode_message = decode_message(1:end-m+1);
 
-err = CRC_detect_error(decode_message, crc_len + length(crc_g) - 1, crc_g);
+BE = decode_message ~= CRC_message;
+BER = sum(BE)/length(BE)
+BLE = CRC_detect_error(decode_message, crc_len + length(crc_g) - 1, crc_g);
+BLER = sum(BLE)/length(BLE)
 
 %% data statistis
-scatterplot(corr_symbol(1:end - 1));
-figure; stem(err);
+% scatterplot(corr_symbol(1:end - 1));
