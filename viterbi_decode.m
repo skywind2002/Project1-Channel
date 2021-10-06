@@ -1,5 +1,6 @@
 function [decodedResult, minError] = viterbi_decode(n, k, m, A, r)
     DEBUG = 0; % show message?
+    r = [r, zeros(1, mod(-length(r), n))];
     decodedResult = zeros(1, length(r) / n); % 解码得到的长度为length(r)/n
 
     % 分别统计所有状态结点的error,route和解码得到的decodedResult
