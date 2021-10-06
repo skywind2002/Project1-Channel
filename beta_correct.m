@@ -16,7 +16,7 @@ function x = beta_correct(r, b, beta, beta_corr_mode)
         x(1) = r(1) / sqrt(1 - b^2);
 
         for i = 2:length(x)
-            x(i) = (r(i) - b * beta(i) * x(i - 1)) / sqrt(1 - b^2);
+            x(i) = r(i) / sqrt(1 - b^2)  - b * beta(i) * r(i - 1);
         end
 
     end
