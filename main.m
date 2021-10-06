@@ -3,24 +3,48 @@ clear all;
 clc;
 
 %% hyperparameters
-len=12000;
-modulation=3;  %modulation mod:1,2,3
-r=1;  %modulation radius
-b=0.7; rho=0.98; sigma=0.1; %channel parameters;
-conv=3; %conv code mod:2,3
-crc_len=5; %CRC poly length
-crc_ENB=1;  %if or not to enable CRC check: 1 enable;0 disable
+len = 12000;
+modulation = 3;  %modulation mod:1,2,3
+r = 1;  %modulation radius
+b = 0.7; rho = 0.98; sigma = 0.1; %channel parameters;
+conv = 3; %conv code mod:2,3
+crc_g = '100000111'-'0';
+crc_len = 200; %CRC poly length
+crc_ENB = 1;  %if or not to enable CRC check: 1 enable;0 disable
+beta_corr_mode = 1; % 1,2: known beta, 3: unknown beta
+Viterbi_mode = 0; % 0: Hard Vierbi, 1: Soft Viterbi
+
+%% coding parameters
+if(conv == 2)
+    n = 2; k = 1; m = 4;
+    A = permute([1 1 0 1; 1 1 1 1], [3, 1, 2]); % size = [k, n, m]
+elseif(conv == 3)
+    n = 3; k = 1; m = 4;
+    A = permute([1 0 1 1; 1 1 0 1; 1 1 1 1], [3, 1, 2]); % size = [k, n, m]
+end
 
 %% bitstream generation
-message=rand(1,len);
-message=double(message>0.5);  %generater 01 bit stream
+message=rand(1, len);
+message=int8(message>0.5);  %generater 01 bit stream
 
 %% system simulation
-x=transmitter(message,modulation,r,conv,crc_len,crc_ENB);
-[y,beta]=channel_trans(x,b,rho,sigma);
+if(crc_ENB)
+    message = CRC_encode(message, crc_len, crc_g);
+end
+x = transmitter(message, modulation, r, n, k, m, A);
 
-%y=beta_correct(y,b,beta);
+[y, beta] = channel_trans(x, b, rho, sigma);
 
+if(any(beta_corr_mode == [1, 2])) % correct y with known beta
+    y = beta_correct(y, b, beta);
+end
+if(Viterbi_mode == 0) % 硬 Viterbi 译码
+    z = f_viterbiDecode(n, k, m, A, r)
+else % 软 Viterbi 译码
+
+end
+
+e = CRC_detect_error(z, crc_len, crc_g);
+
+%% data statistis
 scatterplot(y(1:end-1));
-%x_decode=receiver(y);  % viterbi decoding(to be completed)
-
