@@ -13,37 +13,26 @@ if crc_ENB==1
     message=CRC(message,len);
 end
 
-len=length(message);
-x=[];
-input=[[0,0,0],message];  %set all states to 0
-
-for i=1:len
-    if (conv==2)
-        x_1=input(i)+input(i+2)+input(i+3);   % the poly of conv codes is needed
-        x_2=input(i)+input(i+1)+input(i+2)+input(i+3);
-        x=[x,x_1,x_2];  %coefficient (15,17)
-    elseif (conv==3)
-        x_1=input(i)+input(i+1)+input(i+3);
-        x_2=input(i)+input(i+2)+input(i+3);
-        x_3=input(i)+input(i+1)+input(i+2)+input(i+3); %coefficient (13,15,17)
-        x=[x,x_1,x_2,x_3];
-    end
+if(conv == 2)
+    A = [1 1 0 1; 1 1 1 1]; % size = [n, m, (k)]
+    A = permute(A, [2, 3, 1]); % size = [m, k, n]
+    x = conv_coding(2, 1, 4, A, message);
+elseif(conv == 3)
+    A = [1 0 1 1; 1 1 0 1; 1 1 1 1];
+    A = permute(A, [2, 3, 1])
+    x = conv_coding(3, 1, 3, A, message);
 end
 
-x=mod(x,2);
-%output array x
 %% message constellation mapping (PSK modulation)
 % easy to change to QAM modulation
 mapping_2=[-r,r];
-mapping_4=[r*exp(1j*pi/4),r*exp(1j*pi*3/4),r*exp(1j*pi*7/4),r*exp(1j*pi*5/4)]; %Gray code constraint
-mapping_8=[r*exp(1j*pi*0/4),r*exp(1j*pi*1/4),r*exp(1j*pi*3/4),r*exp(1j*pi*2/4),r*exp(1j*pi*7/4),r*exp(1j*pi*6/4),r*exp(1j*pi*4/4),r*exp(1j*pi*5/4)];
+mappint_4=r*exp(1j*pi*[1 3 7 5]/4); %Gray code constraint
+mapping_8=r*exp(1j*pi*[0 1 3 2 7 6 4 5]/4);
 len=length(x);
 y=[];
 
 if (modulation==1)  %BPSK
-    for i=1:len
-        y=[y,mapping_2(x(i)+1)];
-    end
+    y = mapping_2(x(i)+1);
 elseif (modulation==2) %QPSK
     if (mod(modulation,2)==1)
         x=[x,0];
