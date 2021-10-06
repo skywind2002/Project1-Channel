@@ -34,24 +34,11 @@ y=[];
 if (modulation==1)  %BPSK
     y = mapping_2(x(i)+1);
 elseif (modulation==2) %QPSK
-    if (mod(modulation,2)==1)
-        x=[x,0];
-        len=len+1;
-    end
-    for m=1:len/2
-        y=[y,mapping_4((x(2*i)-1)*2+x(2*i)+1)];
-    end
+    x = [x, zeros(1, mod(-length(x), 2))];
+    y = mapping_4(bin2dec(char(reshape(x, 2, [])'+'0'))+1);
 elseif (modulation==3)
-    if (mod(modulation,3)==1)
-        x=[x,0,0];
-        len=len+2;
-    elseif (mod(modulation,3)==2)
-        x=[x,0];
-        len=len+1;
-    end
-    for i=1:len/3
-        y=[y,mapping_8(x(3*i-2)*4+x(3*i-1)*2+x(3*i)+1)];
-    end
+    x = [x, zeros(1, mod(-length(x), 3))];
+    y = mapping_8(bin2dec(char(reshape(x, 3, [])'+'0'))+1);
 end
 
 end

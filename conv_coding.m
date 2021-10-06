@@ -1,4 +1,7 @@
 %% 对 x 计算以 A 为参数的 (n, k, m) 卷积码。A 是 m*k*n 矩阵，x 是行向量，表示待编码码流。
+% 注：如果有 m 个 n*k 的矩阵 A1, A2, ..., Am，如 m = 5，则可以调用
+% A = permute(cat(3, A1, A2, A3, A4, A5), [3, 1, 2]);
+% 得到这里的参数 A。
 function y = conv_coding(n, k, m, A, x, p)
 if(nargin == 5) 
     p = 2;
