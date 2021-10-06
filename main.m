@@ -24,32 +24,53 @@ elseif (conv == 3)
     A = permute([1 0 1 1; 1 1 0 1; 1 1 1 1], [3, 1, 2]); % size = [k, n, m]
 end
 
+%% modulation parameters
+if(modulation == 1)
+    N = 1;
+    Gray_code = [0 1];
+    mapping = r * exp(1j * pi * Gray_code);
+elseif(modulation == 2)
+    N = 2;
+    Gray_code = [0 1 3 2];
+    mapping = r * exp(1j * pi * (Gray_code + .5) / 2);
+elseif(modulation == 3)
+    N = 3;
+    Gray_code = [0 1 3 2 7 6 4 5];
+    mapping = r * exp(1j * pi * Gray_code / 4);
+end
+
 %% bitstream generation
 raw_message = double(rand(1, len) > 0.5); %generater 01 bit stream
 
 %% system simulation
-if (crc_ENB)
-    message = CRC_encode(raw_message, crc_len, crc_g);
-end
 
-x = transmitter(message, modulation, r, n, k, m, A);
+% transmitter
+% CRC
+CRC_message = CRC(raw_message, crc_len, crc_g, crc_ENB);
+% CONV
+conv_message = conv_encoding(n, k, m, A, CRC_message);
+% MODULATION
+modul_symbol = transmitter(conv_message, N, mapping);
 
-[y, beta] = channel_trans(x, b, rho, sigma);
+% channel
+[receive_symbol, beta] = channel_trans(modul_symbol, b, rho, sigma);
 
-if (any(beta_corr_mode == [1, 2])) % correct y with known beta
-    y = beta_correct(y, b, beta);
-end
-if (Viterbi_mode == 0) % 硬 Viterbi 译码
-    Gray_code = [0 1 3 2 6 7 5 4];
-    y2 = reshape(dec2bin(Gray_code(mod(round(mod(angle(y) / pi, 2) * 4), 8) + 1), 3)' - '0', 1, []);
-    z = viterbi_decode(n, k, m, A, y2)';
-    z = z(1:end-1);
+% receiver
+% correct received symbol with known beta
+corr_symbol = beta_correct(receive_symbol, b, beta, beta_corr_mode);
+% decode with Viterbi
+if (Viterbi_mode == 0) % hard Viterbi decode
+    [~, I] = sort(Gray_code);
+    anti_Gray_code = I - 1; % Gray_code 以码字为下标获得相位，而 anti_Gray_code 以相位为下标获得相应的码字。
+    phase = round((angle(corr_symbol) / pi * 2^N - mod(N - 1, 2)) / 2); % 离散化的相位
+    receive_message = reshape(dec2bin(anti_Gray_code(mod(phase, 2^N) + 1), N)' - '0', 1, []);
+    decode_message = viterbi_decode(n, k, m, A, receive_message)';
 else % 软 Viterbi 译码
-
+    
 end
 
-e = CRC_detect_error(z, crc_len+length(crc_g)-1, crc_g);
+err = CRC_detect_error(decode_message, crc_len + length(crc_g) - 1, crc_g);
 
 %% data statistis
-figure; scatterplot(y(1:end - 1));
-figure; stem(e);
+figure; scatterplot(corr_symbol(1:end - 1));
+figure; stem(err);
