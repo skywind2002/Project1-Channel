@@ -5,7 +5,7 @@
 % nextState - 长度为 (m-1)k 的行向量 (计算下一次状态)
 % input - 长度为 k 的行向量 (需要和当前状态拼接得到完整状态)
 % output - 长度为 n 的行向量
-function [nextState, output] = f_getNext(n, k, m, A, currentState, input)
+function [nextState, output] = f_getNextState(n, k, m, A, currentState, input)
     assert(all(size(input) == [1, k]), "input 应为长度为 k 的行向量")
     assert(all(size(A) == [k, n, m]), "size(A) 应为[k,n,m]")
 

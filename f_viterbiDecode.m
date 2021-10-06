@@ -32,7 +32,7 @@ function [decodedResult, minError] = f_viterbiDecode(n, k, m, A, r)
                     end
 
                     % 对于一条延伸的路径 得到了新的状态和output
-                    [nextState, output] = f_getNext(n, k, m, A, currentState, input);
+                    [nextState, output] = f_getNextState(n, k, m, A, currentState, input);
                     nextStateIndex = f_binaryArray2int(nextState) + 1;
 
                     % 计算output与收到的信号之间的distance得到并更新error和route
