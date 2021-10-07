@@ -12,6 +12,7 @@ function [decodedResult, minError] = viterbi_decode(n, k, m, A, r)
     State = f_int2BinaryArray(0:2^(m - 1) - 1, m - 1);
     newNodesError = zeros(1, length(nodesState));
     newNodesRoute = zeros(length(r) / n, length(nodesState));
+
     for i = 1:(length(r) / n)
         newNodesError = 0 * newNodesError + errorMax;
         newNodesRoute = 0 * newNodesRoute - 1;
@@ -25,24 +26,30 @@ function [decodedResult, minError] = viterbi_decode(n, k, m, A, r)
         rPart = r(r_index);
         distance_rPart_outputLst0 = f_distanceBetweenBinaryArray(rPart, outputLst0);
         distance_rPart_outputLst1 = f_distanceBetweenBinaryArray(rPart, outputLst1);
+
         for t = 1:length(currentStateIndexLst)
             currentStateIndex = currentStateIndexLst(t);
+            
             % input = 0
             nextStateIndex = nextStateIndexLst0(t);
             distance_rPart_output = distance_rPart_outputLst0(t);
+
             if distance_rPart_output + oldNodesError(currentStateIndex) < newNodesError(nextStateIndex)
                 newNodesError(nextStateIndex) = distance_rPart_output + oldNodesError(currentStateIndex); % 路径行进 error在原有的基础上增加
                 newNodesRoute(:, nextStateIndex) = oldNodesRoute(:, currentStateIndex); % 只更新对应state的
                 newNodesRoute(i, nextStateIndex) = 0; % 向前走了一步
             end
-            % input = 0
+
+            % input = 1
             nextStateIndex = nextStateIndexLst1(t);
             distance_rPart_output = distance_rPart_outputLst1(t);
+
             if distance_rPart_output + oldNodesError(currentStateIndex) < newNodesError(nextStateIndex)
                 newNodesError(nextStateIndex) = distance_rPart_output + oldNodesError(currentStateIndex); % 路径行进 error在原有的基础上增加
                 newNodesRoute(:, nextStateIndex) = oldNodesRoute(:, currentStateIndex); % 只更新对应state的
                 newNodesRoute(i, nextStateIndex) = 1; % 向前走了一步
             end
+
         end
 
         oldNodesError = newNodesError;
