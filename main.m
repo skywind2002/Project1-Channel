@@ -12,8 +12,9 @@ conv = 3;
 % channel config
 b = 0.6; rho = 0.98; sigma = 0.1; %channel parameters;
 %b = 1; rho = 1; sigma = 0.1;
+%b = 0; rho = 0; sigma = 0.1;
 % beta correct config
-beta_corr_mode = 0; % 1,2: known beta, 3: unknown beta
+beta_corr_mode = 1; % 1,2: known beta, 3: unknown beta
 % viterbi config
 Viterbi_mode = 0; % 0: Hard Vierbi, 1: Soft Viterbi
 
@@ -27,6 +28,7 @@ elseif (conv == 3)
 end
 
 %% modulation parameters
+% 生成调制步骤的星座图，对应modulation=1/2/3，我们采用BPSK，QPSK和8-PSK调制
 if(modulation == 1)
     N = 1;
     Gray_code = [0 1];
@@ -70,7 +72,7 @@ if (Viterbi_mode == 0) % hard Viterbi decode
 else % 软 Viterbi 译码
     % TODO
 end
-decode_message = decode_message(1:end-m+1);
+decode_message = decode_message(1:end-m+1); %decode message去尾
 
 BE = decode_message ~= CRC_message;
 BER = sum(BE)/length(BE)
@@ -78,4 +80,6 @@ BLE = CRC_detect_error(decode_message, crc_len + length(crc_g) - 1, crc_g);
 BLER = sum(BLE)/length(BLE)
 
 %% data statistis
-% scatterplot(corr_symbol(1:end - 1));
+ scatterplot(corr_symbol(1:end - 1));
+ scatterplot(receive_symbol(1:end-1));
+ scatterplot(modul_symbol(1:end-1));

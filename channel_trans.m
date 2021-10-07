@@ -1,5 +1,9 @@
 function [y, beta] = channel_trans(x, b, rho, sigma)
-    %channel transmit function
+    % 信道传输函数，对输入的复数数列x进行信道的随机扰乱
+    % x - 输入复数数列，是transmitter的调制输出
+    % b - 信道参数之一，控制x(i-1)和x(i)的加权系数
+    % rho - 信道参数之二，控制x(i-1)参数的随机变化
+    % sigma - 信道参数之三，代表随机噪声的功率大小
     % x = [x 0];
     len = length(x);
     beta = zeros(1, len);

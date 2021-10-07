@@ -1,4 +1,4 @@
-%% MODULATION
+%% MODULATION 调制映射函数
 % x: input 01 array
 % N: 1(mapping_2) or 2(mapping_4) or 3(mapping_8)
 % mapping: mapping_2 or mapping_4 or mapping_8
