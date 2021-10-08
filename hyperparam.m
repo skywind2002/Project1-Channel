@@ -3,7 +3,7 @@ DEBUG = 1;
 %% hyperparameters
 len = 20000;
 % module config
-modulation = 2; r = 1;
+modulation = 2; P = 1; % P 是信号功率，r = sqrt(P)
 % crc config
 crc_ENB = 0; % 0 不实用CRC添加冗余
 crc_g = '100000111' - '0'; crc_len = 25;
@@ -32,13 +32,13 @@ end
 if (modulation == 1)
     N = 1;
     Gray_code = [0 1];
-    mapping = r * exp(1j * pi * Gray_code);
+    mapping = sqrt(P) * exp(1j * pi * Gray_code);
 elseif (modulation == 2)
     N = 2;
     Gray_code = [0 1 3 2];
-    mapping = r * exp(1j * pi * (Gray_code + .5) / 2);
+    mapping = sqrt(P) * exp(1j * pi * (Gray_code + .5) / 2);
 elseif (modulation == 3)
     N = 3;
     Gray_code = [0 1 3 2 7 6 4 5];
-    mapping = r * exp(1j * pi * Gray_code / 4);
+    mapping = sqrt(P) * exp(1j * pi * Gray_code / 4);
 end
