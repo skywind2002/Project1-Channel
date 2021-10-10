@@ -1,22 +1,25 @@
 DEBUG = 1;
 
 %% hyperparameters
-len = 20000;
+len = 10000;
 % module config
-modulation = 2; P = 1; % P 是信号功率，r = sqrt(P)
+modulation = 3; P = 1; % P 是信号功率，r = sqrt(P)
 % crc config
-crc_ENB = 0; % 0 不实用CRC添加冗余
+crc_ENB = 0; % 0 不使用CRC添加冗余校验
 crc_g = '100000111' - '0'; crc_len = 25;
 % conv config
-conv = 2;
+conv = 3;
 % channel config
-b = 0.25; rho = 0.9; sigma = 0.1; %channel parameters;
+b = 0; rho = 0.98; sigma = 0.7; % channel parameters;
+% case 1: b = 0
+% case 2: b = rho = 1
+% case 3: b = 0.7, rho = 0.98
 % b = 1; rho = 1; sigma = 0.1;
 % b = 0; rho = 0; sigma = 0.1;
 % beta correct config
-beta_corr_mode = 1; % 1,2: known beta, 3: unknown beta
+beta_corr_mode = 3; % 1,2: known beta, 3: unknown beta
 % viterbi config
-Viterbi_mode = 0; % 0: Hard Vierbi, 1: Soft Viterbi
+Viterbi_mode = 1; % 0: Hard Vierbi, 1: Soft Viterbi
 
 %% coding parameters
 if (conv == 2)
