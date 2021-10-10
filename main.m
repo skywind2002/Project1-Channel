@@ -106,7 +106,7 @@ if DEBUG
 end
 
 % data analysis
-fprintf("【结果分析】")
+fprintf("【结果分析】\n")
 
 BE = decode_message ~= CRC_message; % 传输的错误矩阵
 BER = sum(BE) / length(BE);
