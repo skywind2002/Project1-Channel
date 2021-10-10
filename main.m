@@ -7,7 +7,7 @@ hyperparam; % load parameters
 raw_message = double(rand(1, len) > 0.5); % generater 01 bit stream
 
 if DEBUG
-    fprintf("随机生成原信息: length(raw_message)=%d\n", length(raw_message))
+    fprintf("【随机生成原信息】length(raw_message)=%d\n", length(raw_message))
     % disp(raw_message)
 end
 
@@ -18,19 +18,19 @@ end
 CRC_message = CRC(raw_message, crc_len, crc_g, crc_ENB);
 
 if DEBUG && crc_ENB == 1
-    fprintf("CRC编码添加冗余校验码：每%d为一组 共%d组 ", crc_len, length(raw_message) / crc_len)
+    fprintf("【CRC添加冗余校验】每%d为一组 共%d组 ", crc_len, length(raw_message) / crc_len)
     fprintf("每组在后面加%dbit的校验位 ", length(crc_g) - 1)
     fprintf("length(CRC_message)=%d\n", length(CRC_message))
     % disp(CRC_message)
 else
-    fprintf("未使用CRC\n")
+    fprintf("【未使用CRC】\n")
 end
 
 % CONV
 conv_message = conv_encoding(n, k, m, A, CRC_message); % 增加了 (m-1) 个收尾零 % TODO: 是否还需要考虑不收尾的情况
 
 if DEBUG
-    fprintf("(%d,%d,%d)卷积编码: 每%dbit映射为%dbit的符号 收尾补%d个零 ", n, k, m, k, n, (m - 1) * n)
+    fprintf("【(%d,%d,%d)卷积编码】每%dbit映射为%dbit的符号 收尾补%d个零 ", n, k, m, k, n, (m - 1) * n)
     fprintf("length(conv_message)=%d\n", length(conv_message))
     % disp(conv_message)
 end
@@ -39,19 +39,19 @@ end
 modul_symbol = transmitter(conv_message, N, mapping);
 
 if DEBUG
-    fprintf("调制模式: modulation=%d 即%d个散点图在复平面分布 P=%.2f length(modul_symbol) = %d\n", modulation, length(Gray_code),P, length(modul_symbol))
+    fprintf("【调制】模式modulation=%d 即%d个散点图在复平面分布 P=%.2f length(modul_symbol) = %d\n", modulation, length(Gray_code), P, length(modul_symbol))
     % disp(modul_symbol)
     subplot(1, 3, 1)
     scatter(real(modul_symbol), imag(modul_symbol)); title("moduled symbol"); axis equal; ylim([-2, 2]); xlim([-2, 2]);
 
-    fprintf("信道发送: b=%.2f rho=%.2f sigma=%.2f ",b,rho,sigma)
+    fprintf("【信道传输】b=%.2f rho=%.2f sigma=%.2f ", b, rho, sigma)
 end
 
 % channel
 [receive_symbol, beta] = channel_trans(modul_symbol, b, rho, sigma);
 
 if DEBUG
-    fprintf("接收到通过信道的序列: length(receive_symbol)=%d\n", length(receive_symbol))
+    fprintf("【接收序列】length(receive_symbol)=%d\n", length(receive_symbol))
     % disp(receive_symbol)
     subplot(1, 3, 2)
     scatter(real(receive_symbol), imag(receive_symbol)); title("received symbol"); axis equal; ylim([-2, 2]); xlim([-2, 2]);
@@ -62,7 +62,7 @@ end
 corr_symbol = beta_correct(receive_symbol, b, beta, beta_corr_mode);
 
 if DEBUG
-    fprintf("通过对信道已知的信息对收到的序列进行修正: 模式beta_corr_mode=%d length(corr_symbol)=%d\n", beta_corr_mode, length(corr_symbol))
+    fprintf("【通过已知信息对接收序列作修正】模式beta_corr_mode=%d length(corr_symbol)=%d\n", beta_corr_mode, length(corr_symbol))
     % disp(corr_symbol)
     subplot(1, 3, 3)
     scatter(real(corr_symbol), imag(corr_symbol)); title("beta corrected symbol"); axis equal; ylim([-2, 2]); xlim([-2, 2]);
@@ -78,9 +78,8 @@ if (Viterbi_mode == 0) % hard Viterbi decode
     decode_message = viterbi_decode(n, k, m, A, receive_message)';
 
     if DEBUG
-        fprintf("格雷码反映射: 得到长度为%d的01序列\n", length(receive_message))
         % disp(receive_message)
-        fprintf("Hard Viterbi: length(decode_message)=%d\n", length(decode_message))
+        fprintf("【Hard Viterbi】格雷码反映射: 得到长度为%d的01序列\n length(decode_message)=%d\n", length(receive_message), length(decode_message))
     end
 
 else % 软 Viterbi 译码
@@ -95,7 +94,7 @@ else % 软 Viterbi 译码
     % (3,1,4) conv=3 N=3(mapping_8)
 
     if DEBUG
-        fprintf("Soft Viterbi: length(decode_message)=%d\n", length(decode_message))
+        fprintf("【Soft Viterbi】length(decode_message)=%d\n", length(decode_message))
     end
 
 end
@@ -103,10 +102,11 @@ end
 decode_message = decode_message(1:end - m + 1); %decode message去尾
 
 if DEBUG
-    fprintf("去尾零: length(decode_message)=%d\n", length(decode_message))
+    fprintf("【去尾零】length(decode_message)=%d\n", length(decode_message))
 end
 
 % data analysis
+fprintf("【结果分析】")
 
 BE = decode_message ~= CRC_message; % 传输的错误矩阵
 BER = sum(BE) / length(BE);
