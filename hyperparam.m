@@ -2,8 +2,6 @@ DEBUG = 1;
 
 %% hyperparameters
 len = 10000;
-% module config
-modulation = 3; P = 1; % P 是信号功率，r = sqrt(P)
 % crc config
 crc_ENB = 0; % 0 不使用CRC添加冗余校验
 crc_g = '100000111' - '0'; crc_len = 25;
@@ -18,6 +16,15 @@ b = 0; rho = 0.98; sigma = 0.7; % channel parameters;
 % b = 0; rho = 0; sigma = 0.1;
 % beta correct config
 beta_corr_mode = 3; % 1,2: known beta, 3: unknown beta
+% module config
+modulation = 3; P = 1; % P 是信号功率，r = sqrt(P)
+if(exist('SNR')) % 如果定义了信噪比，则根据信噪比计算应当使用的功率 P
+    if(beta_corr_mode == 3) % 已知 beta 时
+        P = SNR * sigma^2 / (1 - b^2 + b^2 * sigma^2);
+    else % 未知 beta 时
+        P = SNR * sigma^2 / (1 - b^2 - b^2 * sigma^2 * SNR);
+    end
+end
 % viterbi config
 Viterbi_mode = 1; % 0: Hard Vierbi, 1: Soft Viterbi
 
