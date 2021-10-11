@@ -34,7 +34,7 @@ end
 modul_symbol = transmitter(conv_message, N, mapping);
 
 if DEBUG
-    fprintf("【调制】模式modulation=%d 即%d个散点图在复平面分布 P=%.2f length(modul_symbol) = %d\n", modulation, length(Gray_code), P, length(modul_symbol))
+    fprintf("【调制】模式modulation=%d 即%d个散点图在复平面分布 P=%.2f length(modul_symbol) = %d\n", modulation_mode, length(Gray_code), P, length(modul_symbol))
     % disp(modul_symbol)
     subplot(1, 3, 1)
     scatter(real(modul_symbol), imag(modul_symbol), '.'); 
@@ -102,7 +102,7 @@ else % 软 Viterbi 译码
     % (2,1,4) conv=2 N=1(mapping_2 -1/1)
     % (3,1,4) conv=3 N=1(mapping_2 -1/1)
 
-    decode_message = viterbi_decode(n, k, m, A, corr_symbol, Viterbi_mode, modulation, P)';
+    decode_message = viterbi_decode(n, k, m, A, corr_symbol, Viterbi_mode, modulation_mode, P)';
 
     % (2,1,4) conv=2 N=2(mapping_4)
     % (3,1,4) conv=3 N=3(mapping_8)

@@ -10,8 +10,6 @@ channel_mode = 3; % 1: b = 0, 2: b = rho = 1, 3: b = 0.7, rho = 0.98
 beta_corr_mode = 3; % 1,2: known beta, 3: unknown beta
 modulation_mode = 3; % 1: mapping-2, 2: mapping-4, 3: mapping-8
 Viterbi_mode = 1; % 0: Hard Vierbi, 1: Soft Viterbi
-SNR = 1;
-
 hyperparam; % load parameters
 simulate; % simulate
 
