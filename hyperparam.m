@@ -8,7 +8,7 @@ if(channel_mode == 1)
 elseif(channel_mode == 2)
     b = 1; rho = 1; sigma = 0.1;
 else
-    b = 0; rho = 0.98; sigma = 0.7;
+    b = .7; rho = 0.98; sigma = 0.1;
 end
 % module config
 % P 是信号功率，r = sqrt(P)
