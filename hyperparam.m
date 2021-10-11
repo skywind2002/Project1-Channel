@@ -21,6 +21,7 @@ if(exist('SNR', 'var')) % 如果定义了信噪比，则根据信噪比计算应
 else
     P = 1; 
 end
+R = sqrt(P);
 
 %% coding parameters
 if (conv_mode == 2)

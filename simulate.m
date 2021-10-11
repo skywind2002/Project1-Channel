@@ -36,12 +36,6 @@ modul_symbol = transmitter(conv_message, N, mapping);
 if DEBUG
     fprintf("【调制】模式modulation=%d 即%d个散点图在复平面分布 P=%.2f length(modul_symbol) = %d\n", modulation_mode, length(Gray_code), P, length(modul_symbol))
     % disp(modul_symbol)
-    subplot(1, 3, 1)
-    scatter(real(modul_symbol), imag(modul_symbol), '.'); 
-    title("moduled symbol");
-    axis equal; 
-    ylim([-P - 1, P + 1]); 
-    xlim([-P - 1, P + 1]);
 
     if(~exist('SNR', 'var'))
         if(beta_corr_mode == 3)
@@ -59,12 +53,6 @@ end
 if DEBUG
     fprintf("【接收序列】length(receive_symbol)=%d\n", length(receive_symbol))
     % disp(receive_symbol)
-    subplot(1, 3, 2)
-    scatter(real(receive_symbol), imag(receive_symbol), '.'); 
-    title("received symbol"); 
-    axis equal; 
-    ylim([-P - 1, P + 1]); 
-    xlim([-P - 1, P + 1]);
 end
 
 % receiver
@@ -74,12 +62,6 @@ corr_symbol = beta_correct(receive_symbol, b, beta, beta_corr_mode);
 if DEBUG
     fprintf("【通过已知信息对接收序列作修正】模式beta_corr_mode=%d length(corr_symbol)=%d\n", beta_corr_mode, length(corr_symbol))
     % disp(corr_symbol)
-    subplot(1, 3, 3)
-    scatter(real(corr_symbol), imag(corr_symbol), '.'); 
-    title("beta corrected symbol");
-    axis equal; 
-    ylim([-P - 1, P + 1]); 
-    xlim([-P - 1, P + 1]);
 end
 
 % decode with Viterbi
