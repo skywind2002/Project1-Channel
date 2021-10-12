@@ -33,7 +33,7 @@ else
 end
 
 % CONV
-conv_message = conv_encoding(n, k, m, A, CRC_message); % 增加了 (m-1) 个收尾零 % TODO: 是否还需要考虑不收尾的情况
+conv_message = conv_encoding(n, k, m, A, CRC_message, 1); % 增加了 (m-1) 个收尾零 % TODO: 是否还需要考虑不收尾的情况
 
 if DEBUG
     fprintf("(%d,%d,%d)卷积编码: 每%dbit映射为%dbit的符号 收尾补%d个零 ", n, k, m, k, n, (m - 1) * n)

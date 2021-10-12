@@ -2,9 +2,9 @@
 % 注：如果有 m 个 k*n 的矩阵 A1, A2, ..., Am，如 m = 5，则可以调用
 % A = cat(3, A1, A2, A3, A4, A5);
 % 得到这里的参数 A。
-function y = conv_encoding(n, k, m, A, x, p)
+function y = conv_encoding(n, k, m, A, x, zeroending, p)
 
-    if (nargin == 5)
+    if (nargin == 6)
         p = 2;
     end
 
@@ -12,7 +12,9 @@ function y = conv_encoding(n, k, m, A, x, p)
     assert(all(size(A) == [k, n, m]), "A 应为 k*n*m 矩阵！")
     A = reshape(permute(A, [1, 3, 2]), m * k, n); % 化为 m*k 行 n 列矩阵方便后续计算
     x = [zeros(1, k * (m - 1)), x]; % 前面补零，从零状态开始
-    x = [x, zeros(1, k * (m - 1))]; % 后面补零，收尾
+    if(zeroending == 1)
+        x = [x, zeros(1, k * (m - 1))]; % 后面补零，收尾
+    end
     x = [x, zeros(1, mod(-length(x), k))]; % 补零使得 x 长度为 k 的整数倍
     y = zeros(length(x) / k - m + 1, n);
 
