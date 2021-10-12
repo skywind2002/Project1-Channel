@@ -3,14 +3,14 @@ clear all; close all; clc;
 
 % config
 DEBUG = 1;
-len = 10000; % message length
+len = 100; % message length
 crc_ENB = 0; % 0: not use CRC, 1: use CRC
 conv_mode = 3; % 2: (2, 1, 4), 3: (3, 1, 4)
 channel_mode = 3; % 1: b = 0, 2: b = rho = 1, 3: b = 0.7, rho = 0.98
 beta_corr_mode = 1; % 1,2: known beta, 3: unknown beta
-modulation_mode = 1; % 1: mapping-2, 2: mapping-4, 3: mapping-8
-Viterbi_mode = 1; % 0: Hard Vierbi, 1: Soft Viterbi
-P = 2;
+modulation_mode = 3; % 1: mapping-2, 2: mapping-4, 3: mapping-8
+Viterbi_mode = 0; % 0: Hard Vierbi, 1: Soft Viterbi
+P = 5;
 hyperparam; % load parameters
 simulate; % simulate
 

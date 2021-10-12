@@ -71,7 +71,8 @@ if (Viterbi_mode == 0) % hard Viterbi decode
     phase = round((angle(corr_symbol) / pi * 2^N - mod(N - 1, 2)) / 2); % 离散化的相位
     receive_message = reshape(dec2bin(anti_Gray_code(mod(phase, 2^N) + 1), N)' - '0', 1, []); % 这里与sqrt(P)没关系是因为仅通过相位进行判断
 
-    decode_message = viterbi_decode(n, k, m, A, receive_message)';
+    decode_message = viterbi_decode2(n, k, m, A, receive_message, 2);
+    %decode_message = viterbi_decode(n, k, m, A, receive_message)';
 
     if DEBUG
         % disp(receive_message)
