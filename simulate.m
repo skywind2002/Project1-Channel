@@ -70,9 +70,9 @@ if (Viterbi_mode == 0) % hard Viterbi decode
     anti_Gray_code = I - 1; % Gray_code 以码字为下标获得相位，而 anti_Gray_code 以相位为下标获得相应的码字。
     phase = round((angle(corr_symbol) / pi * 2^N - mod(N - 1, 2)) / 2); % 离散化的相位
     receive_message = reshape(dec2bin(anti_Gray_code(mod(phase, 2^N) + 1), N)' - '0', 1, []); % 这里与sqrt(P)没关系是因为仅通过相位进行判断
-
-    decode_message = viterbi_decode2(n, k, m, A, receive_message, 2);
-    %decode_message = viterbi_decode(n, k, m, A, receive_message)';
+    
+    distance = @(b, a)(hard_distance(b, a, 2));
+    decode_message = viterbi_decode2(n, k, m, A, receive_message, distance, 0, 2);
 
     if DEBUG
         % disp(receive_message)
@@ -80,15 +80,9 @@ if (Viterbi_mode == 0) % hard Viterbi decode
     end
 
 else % 软 Viterbi 译码
-    % TODO
-
-    % (2,1,4) conv=2 N=1(mapping_2 -1/1)
-    % (3,1,4) conv=3 N=1(mapping_2 -1/1)
-
-    decode_message = viterbi_decode(n, k, m, A, corr_symbol, Viterbi_mode, modulation_mode, P)';
-
-    % (2,1,4) conv=2 N=2(mapping_4)
-    % (3,1,4) conv=3 N=3(mapping_8)
+    
+    distance = @(z, y)(soft_distance(z, y, mapping, 2));
+    decode_message = viterbi_decode2(n, k, m, A, corr_symbol, distance, 1, 2);
 
     if DEBUG
         fprintf("【Soft Viterbi】length(decode_message)=%d\n", length(decode_message))

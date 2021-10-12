@@ -1,9 +1,8 @@
-function decode = viterbi_decode2(n, k, m, A, r, p)
-    if(nargin == 5)
-        p = 2;
+function decode = viterbi_decode2(n, k, m, A, r, distance, mode, p)
+    if(mode == 0) % Hard Viterbi
+        r = [r, zeros(1, mod(-length(r), n))]; % 补零变成 n 的倍数
+        r = reshape(r, n, []); % 化为若干列，每一列都对应于 k 个原符号（共依赖于 m*k 个原符号）
     end
-    r = [r, zeros(1, mod(-length(r), n))]; % 补零变成 n 的倍数
-    r = reshape(r, n, []); % 化为若干列，每一列都对应于 k 个原符号（共依赖于 m*k 个原符号）
     n_decode = size(r, 2) * k; % 最终输出的码流长度
     
     n_state = p^(m - 1); % 米利机状态数，p种情形在输入中，p^{m-1} 种情形在状态中
