@@ -38,10 +38,10 @@ if DEBUG
     % disp(modul_symbol)
 
     if(~exist('SNR', 'var'))
-        if(beta_corr_mode == 3)
-            SNR = (1 - b^2) * P / sigma^2 + b^2 * P;
-        else
-            SNR = (1 - b^2) * P / (b^2 * sigma^2 * P + sigma^2);
+        if(beta_corr_mode == 3) % unknown beta
+            SNR = (1 - b^2) * P / (sigma^2 + b^2 * P);
+        else % known beta
+            SNR = P / sigma^2;
         end
     end
     fprintf("【信道传输】b=%.2f rho=%.2f sigma=%.2f SNR = %.2fdB\n", b, rho, sigma, 20*log10(SNR))
