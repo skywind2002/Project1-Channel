@@ -19,7 +19,9 @@ if(exist('SNR', 'var')) % 如果定义了信噪比，则根据信噪比计算应
         P = SNR * sigma^2 / (1 - b^2 - b^2 * sigma^2 * SNR);
     end
 else
-    P = 1; 
+    if(~exist('P', 'var'))
+        P = 1; 
+    end
 end
 R = sqrt(P);
 
