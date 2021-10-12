@@ -12,12 +12,14 @@ function x = beta_correct(r, b, beta, beta_corr_mode)
         t = r ./ beta;
         x = [t(2:end), 0];
     else
+        alpha = -b / sqrt(1 - b^2) * beta;
+        alpha = alpha / max(abs(alpha));
         x = zeros(size(r));
-        x(1) = r(1) / sqrt(1 - b^2);
-
-        for i = 2:length(x)
-            x(i) = r(i) / sqrt(1 - b^2)  - b * beta(i) * r(i - 1);
+        for i = 1:length(x)
+            Ai = [1, cumprod(alpha(i:-1:2))];
+            x(i) = r(1:i) * Ai(end:-1:1).';
         end
+        x = x / sqrt(1 - b^2);
 
     end
 end
