@@ -1,5 +1,6 @@
 *.asv
 *.mlx
+*.mat
 .vscode/*
 实验报告/*
 playground/
