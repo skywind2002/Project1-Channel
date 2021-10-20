@@ -14,7 +14,7 @@ end
 % P 是信号功率，r = sqrt(P)
 if(exist('SNR', 'var')) % 如果定义了信噪比，则根据信噪比计算应当使用的功率 P
     P = SNR * sigma^2;
-else if(~exist('P', 'var'))
+elseif(~exist('P', 'var'))
     P = 1; 
 end
 R = sqrt(P);
