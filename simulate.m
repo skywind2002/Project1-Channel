@@ -48,7 +48,11 @@ if DEBUG
 end
 
 % channel
-[receive_symbol, beta] = channel_trans(modul_symbol, b, rho, sigma);
+modul_symbol = [modul_symbol, zeros(1, mod(-length(modul_symbol), add_zero))]; % 补零到 add_zero 的整数倍
+tmp = reshape(modul_symbol, add_zero, []); % 折叠为二维
+tmp = vertcat(tmp, zeros(1, size(tmp, 2))); % 插入 0 符号
+send_symbol = reshape(tmp, 1, []); % 展开为一维
+[receive_symbol, beta] = channel_trans(send_symbol, b, rho, sigma);
 
 if DEBUG
     fprintf("【接收序列】length(receive_symbol)=%d\n", length(receive_symbol))
@@ -57,7 +61,7 @@ end
 
 % receiver
 % correct received symbol with known beta
-corr_symbol = beta_correct(receive_symbol, b, beta, beta_corr_mode);
+corr_symbol = beta_correct(receive_symbol, b, beta, beta_corr_mode, add_zero);
 
 if DEBUG
     fprintf("【通过已知信息对接收序列作修正】模式beta_corr_mode=%d length(corr_symbol)=%d\n", beta_corr_mode, length(corr_symbol))
@@ -90,7 +94,7 @@ else % 软 Viterbi 译码
 
 end
 
-decode_message = decode_message(1:end - m + 1); %decode message去尾
+decode_message = decode_message(1:length(CRC_message)); %decode message去尾
 
 if DEBUG
     fprintf("【去尾零】length(decode_message)=%d\n", length(decode_message))
