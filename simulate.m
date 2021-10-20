@@ -12,13 +12,15 @@ end
 % CRC
 CRC_message = CRC(raw_message, crc_len, crc_g, crc_ENB);
 
-if DEBUG && crc_ENB == 1
-    fprintf("【CRC添加冗余校验】每%d为一组 共%d组 ", crc_len, length(raw_message) / crc_len)
-    fprintf("每组在后面加%dbit的校验位 ", length(crc_g) - 1)
-    fprintf("length(CRC_message)=%d\n", length(CRC_message))
-    % disp(CRC_message)
-else
-    fprintf("【未使用CRC】\n")
+if DEBUG
+    if crc_ENB == 1
+        fprintf("【CRC添加冗余校验】每%d为一组 共%d组 ", crc_len, length(raw_message) / crc_len)
+        fprintf("每组在后面加%dbit的校验位 ", length(crc_g) - 1)
+        fprintf("length(CRC_message)=%d\n", length(CRC_message))
+        % disp(CRC_message)
+    else
+        fprintf("【未使用CRC】\n")
+    end
 end
 
 % CONV
