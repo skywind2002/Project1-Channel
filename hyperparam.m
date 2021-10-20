@@ -13,19 +13,9 @@ end
 % module config
 % P 是信号功率，r = sqrt(P)
 if(exist('SNR', 'var')) % 如果定义了信噪比，则根据信噪比计算应当使用的功率 P
-    if(beta_corr_mode == 3) % 已知 beta 时
-        P = SNR * sigma^2;
-    else % 未知 beta 时
-        P = SNR * sigma^2 / (1 - b^2 - b^2 * SNR);
-    end
-    if(P < 0 || P > 10)
-        warning("SNR 设置过大，不可实现！已将 P 设置为 1")
-        P = 1;
-    end
-else
-    if(~exist('P', 'var'))
-        P = 1; 
-    end
+    P = SNR * sigma^2;
+else if(~exist('P', 'var'))
+    P = 1; 
 end
 R = sqrt(P);
 

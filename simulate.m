@@ -39,13 +39,7 @@ if DEBUG
     fprintf("【调制】模式modulation=%d 即%d个散点图在复平面分布 P=%.2f length(modul_symbol) = %d\n", modulation_mode, length(Gray_code), P, length(modul_symbol))
     % disp(modul_symbol)
 
-    if(~exist('SNR', 'var'))
-        if(beta_corr_mode == 3) % unknown beta
-            SNR = (1 - b^2) * P / (sigma^2 + b^2 * P);
-        else % known beta
-            SNR = P / sigma^2;
-        end
-    end
+    SNR = P / sigma^2;
     fprintf("【信道传输】b=%.2f rho=%.2f sigma=%.2f SNR = %.2fdB\n", b, rho, sigma, 20*log10(SNR))
 end
 
