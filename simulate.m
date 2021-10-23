@@ -44,10 +44,20 @@ if DEBUG
 end
 
 % channel
-modul_symbol = [modul_symbol, zeros(1, mod(-length(modul_symbol), add_zero))]; % 补零到 add_zero 的整数倍
-tmp = reshape(modul_symbol, add_zero, []); % 折叠为二维
-tmp = vertcat(tmp, zeros(1, size(tmp, 2))); % 插入 0 符号
-send_symbol = reshape(tmp, 1, []); % 展开为一维
+send_symbol = modul_symbol;
+if(interweave ~= 0)
+    send_symbol = [send_symbol, zeros(1, mod(-length(send_symbol), interweave))]; % 补零到 interweave 的整数倍
+    send_symbol = reshape(reshape(send_symbol, interweave, [])', 1, []);
+end
+if(add_zero ~= 0)
+    send_symbol = [send_symbol, zeros(1, mod(-length(send_symbol), add_zero))]; % 补零到 add_zero 的整数倍
+    tmp = reshape(send_symbol, add_zero, []); % 折叠为二维
+    tmp = vertcat(tmp, zeros(1, size(tmp, 2))); % 插入 0 符号
+    send_symbol = reshape(tmp, 1, []); % 展开为一维
+end
+if(add_pre_seq ~= 0)
+    send_symbol = [repmat([R, 0], 1, add_pre_seq), send_symbol];
+end
 [receive_symbol, beta] = channel_trans(send_symbol, b, rho, sigma);
 
 if DEBUG
@@ -56,8 +66,27 @@ if DEBUG
 end
 
 % receiver
+if(add_pre_seq ~= 0)
+    beta = ones(size(beta)) * mean([receive_symbol(2:2:2*add_pre_seq)]) / b;
+elseif(add_zero ~= 0) % 将 beta 中第 (1:n) * (add_zero+1) + 1 位置零
+    tmp = reshape([beta(2:end), 0], add_zero + 1, []);
+    tmp(end, :) = 0;
+    tmp = reshape(tmp, 1, []);
+    beta(2:end) = tmp(1:end-1);
+end
 % correct received symbol with known beta
-corr_symbol = beta_correct(receive_symbol, b, beta, beta_corr_mode, add_zero);
+corr_symbol = beta_correct(receive_symbol, b, beta, beta_corr_mode, add_zero, add_pre_seq);
+
+if(add_pre_seq ~= 0)
+    corr_symbol = corr_symbol(2*add_pre_seq+1:end);
+end
+if(add_zero ~= 0)
+    corr_symbol = reshape(corr_symbol, add_zero + 1, []);
+    corr_symbol = reshape(corr_symbol(1:end-1, :), 1, []);
+end
+if(interweave ~= 0)
+    corr_symbol = reshape(reshape(corr_symbol, [], interweave)', 1, []);
+end
 
 if DEBUG
     fprintf("【通过已知信息对接收序列作修正】模式beta_corr_mode=%d length(corr_symbol)=%d\n", beta_corr_mode, length(corr_symbol))
