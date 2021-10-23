@@ -1,7 +1,8 @@
 %% hyperparameters
 
 % crc config
-crc_g = '100000111' - '0'; crc_len = 25;
+crc_g = dec2bin(0x104C11DB7) - '0';
+crc_len = 200;
 % channel config
 if(channel_mode == 1)
     b = 0; rho = 0; sigma = 0.1;
@@ -12,11 +13,11 @@ else
 end
 % module config
 % P 是信号功率，r = sqrt(P)
-if(exist('SNR', 'var')) % 如果定义了信噪比，则根据信噪比计算应当使用的功率 P
-    P = SNR * sigma^2;
-elseif(~exist('P', 'var'))
-    P = 1; 
-end
+% if(exist('SNR', 'var')) % 如果定义了信噪比，则根据信噪比计算应当使用的功率 P
+%     P = SNR * sigma^2;
+% elseif(~exist('P', 'var'))
+%     P = 1; 
+% end
 R = sqrt(P);
 
 %% coding parameters
